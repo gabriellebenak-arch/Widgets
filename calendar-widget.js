@@ -62,24 +62,27 @@
   }
 
   var CSS = [
-    "." + P + "-root{--rim:rgba(255,255,255,.55);--ink:#2f3337;--mute:#767c84;",
+    "." + P + "-root{--rim:rgba(255,255,255,.62);--ink:#2b2f33;--mute:#767c84;",
     "--line:rgba(120,128,138,.18);font-family:inherit;color:var(--ink);",
-    "display:grid;grid-template-columns:1.25fr 1fr;gap:16px;padding:18px;border-radius:20px;",
-    "background:rgba(255,255,255,.34);-webkit-backdrop-filter:blur(30px) saturate(190%);",
-    "backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--rim);",
-    "box-shadow:0 8px 26px rgba(31,38,48,.09),inset 0 1px 0 rgba(255,255,255,.65)}",
+    "display:grid;grid-template-columns:1.25fr 1fr;gap:16px;padding:16px;border-radius:20px;",
+    "background:linear-gradient(150deg,rgba(255,255,255,.36),rgba(255,255,255,.17));"
+    + "-webkit-backdrop-filter:blur(34px) saturate(200%);",
+    "backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--rim);"
+    + "text-shadow:0 1px 1px rgba(255,255,255,.5);",
+    "box-shadow:0 8px 26px rgba(31,38,48,.10),inset 0 1px 0 rgba(255,255,255,.8),"
+    + "inset 0 -1px 0 rgba(255,255,255,.22)}",
     "." + P + "-root *{box-sizing:border-box}",
-    "." + P + "-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}",
+    "." + P + "-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}",
     "." + P + "-mo{font-size:14px;font-weight:650;letter-spacing:.01em}",
     "." + P + "-nav{display:flex;gap:6px}",
     "." + P + "-nav button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);",
     "background:rgba(255,255,255,.45);color:var(--mute);font-size:13px;line-height:1;cursor:pointer;",
     "transition:background .15s,color .15s}",
     "." + P + "-nav button:hover{background:#fff;color:var(--ink)}",
-    "." + P + "-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}",
+    "." + P + "-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}",
     "." + P + "-dow{font-size:11px;font-weight:600;color:var(--mute);text-align:center;",
-    "padding:4px 0;letter-spacing:.04em;text-transform:uppercase}",
-    "." + P + "-d{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;",
+    "padding:1px 0 3px;letter-spacing:.04em;text-transform:uppercase}",
+    "." + P + "-d{aspect-ratio:1/.68;display:flex;align-items:center;justify-content:center;",
     "font-size:12px;border-radius:9px;position:relative;border:0;background:transparent;",
     "color:inherit;font-family:inherit;cursor:pointer;transition:background .15s}",
     "." + P + "-d:hover{background:rgba(255,255,255,.6)}",
@@ -90,13 +93,13 @@
     "." + P + "-d.today::after{background:#fff}",
     "." + P + "-d.sel{box-shadow:inset 0 0 0 2px var(--accent)}",
     "." + P + "-side{border-left:1px solid var(--line);padding-left:16px;min-width:0}",
-    "." + P + "-sh{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 12px}",
+    "." + P + "-sh{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 8px}",
     "." + P + "-sh h3{margin:0;font-size:14px;font-weight:650}",
     "." + P + "-back{border:0;background:transparent;padding:0;font-family:inherit;",
     "font-size:12px;color:var(--accent);cursor:pointer}",
-    "." + P + "-ev{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}",
+    "." + P + "-ev{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}",
     "." + P + "-ev:last-child{border-bottom:0}",
-    "." + P + "-dt{flex:none;width:40px;text-align:center;border-radius:9px;padding:5px 0;",
+    "." + P + "-dt{flex:none;width:38px;text-align:center;border-radius:9px;padding:4px 0;",
     "background:rgba(255,255,255,.5);border:1px solid var(--line)}",
     "." + P + "-dt b{display:block;font-size:14px;line-height:1.1;font-weight:650}",
     "." + P + "-dt span{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}",
@@ -188,7 +191,7 @@
               '<div class="' + P + '-grid">' + DOW.map(function (w) {
                 return '<div class="' + P + '-dow">' + w + "</div>";
               }).join("") + "</div>" +
-              '<div class="' + P + '-grid" style="margin-top:4px">' + cells + "</div>" +
+              '<div class="' + P + '-grid" style="margin-top:3px">' + cells + "</div>" +
             "</div>" +
             '<div class="' + P + '-side"><div class="' + P + '-sh"><h3>' + esc(heading) + "</h3>" +
               back + "</div>" + items + "</div>" +

@@ -79,7 +79,10 @@
         // Invisible on the live page. In Studio it doubles as a probe: this
         // environment's header is not header[data-c13y-region="header"], and
         // the nav rules cannot be written without knowing what it actually is.
-        var inStudio = location.pathname.indexOf("/studio/") !== -1;
+        // TEMP: Staffbase renders a placeholder for custom blocks in the editor
+        // and never executes them there, so the probe has to show on the live
+        // page. Set this back to the /studio/ check once the nav is sorted.
+        var inStudio = true;
         container.innerHTML = inStudio
           ? '<div style="font:500 12px/1.4 system-ui,sans-serif;color:#6b7178;' +
             'border:1px dashed #c3c8ce;border-radius:10px;padding:10px 12px;' +

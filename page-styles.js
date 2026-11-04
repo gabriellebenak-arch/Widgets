@@ -1,34 +1,36 @@
 /**
  * Staffbase external block: Page Styles.
  *
- * Renders nothing. Its job is to pull dashboard.css at runtime and put it in
- * document.head, standing in for the Studio Custom CSS box on environments
- * where that box will not save.
+ * Renders nothing. Puts a <style> tag into document.head, standing in for the
+ * Studio Custom CSS box on environments where that box will not save.
  *
- * The stylesheet is fetched rather than inlined on purpose. Staffbase caches a
- * registered block's JS hard enough that a change needs a brand new URL, which
- * made every CSS tweak a re-registration. A separate file with a timestamped
- * request sidesteps that: register this once, then only ever edit the CSS.
+ * The CSS is inline rather than fetched: the page's content security policy
+ * blocks a cross-origin fetch even though it allows the script itself to load
+ * from the same host. The cost is that changing BASE needs a fresh ?v= on the
+ * registered URL, so day-to-day tweaks belong in the Extra CSS field instead —
+ * that one is editable in Studio and takes effect immediately.
  *
  * Drop ONE of these on a page. Two would fight over the same <style> id.
  */
 (function () {
   var STYLE_ID = "sb-page-styles";
-  var CSS_URL = "https://gabriellebenak-arch.github.io/Widgets/dashboard.css";
 
-  var ATTRS = ["extracss", "cssurl", "disabled"];
+  var BASE = "/* ===================================================================\n   Dashboard stylesheet — gabdashboarddraft\n   Loaded at runtime by the Page Styles block. Edit this file, commit,\n   hard-refresh. No re-registering, no cache busting: the block appends\n   a timestamp to the request.\n   =================================================================== */\n\n/* --- nav: glass pill -----------------------------------------------\n   The menubar paints itself from Tailwind tokens in the\n   \"menubar-intranet\" namespace, so overriding `background` on the\n   element loses — the utility class just re-reads the variable.\n   Override the variables instead and every consumer follows.          */\n:root:not(#x):not(#x) {\n  --sb-background-menubar-intranet: rgba(255,255,255,0.28) !important;\n  --sb-background-menubar-intranet-hover: rgba(255,255,255,0.55) !important;\n  --sb-background-menubar-intranet-accent: rgba(255,255,255,0.78) !important;\n  --sb-background-menubar-intranet-pressed: rgba(255,255,255,0.78) !important;\n  --sb-text-menubar-intranet: #2b2f33 !important;\n  --sb-text-menubar-intranet-hover: #11151a !important;\n  --sb-text-menubar-intranet-pressed: #11151a !important;\n}\n\n/* The pill itself is whatever element directly wraps the item list.\n   Selecting it by its child avoids depending on hashed class names. */\n:is(div, nav, header):has(> ul.mx-2.flex.h-full.w-fit.items-center):not(#x):not(#x) {\n  background-color: rgba(255,255,255,0.28) !important;\n  background-image: linear-gradient(150deg, rgba(255,255,255,0.36), rgba(255,255,255,0.16)) !important;\n  -webkit-backdrop-filter: blur(34px) saturate(200%) !important;\n  backdrop-filter: blur(34px) saturate(200%) !important;\n  border: 1px solid rgba(255,255,255,0.62) !important;\n  border-radius: 999px !important;\n  box-shadow: 0 8px 26px rgba(31,38,48,0.12),\n              inset 0 1px 0 rgba(255,255,255,0.85),\n              inset 0 -1px 0 rgba(255,255,255,0.22) !important;\n}\n\n/* Items: dark text with a soft lift so they stay legible on glass. */\nul.mx-2.flex.h-full.w-fit.items-center:not(#x) a.item,\nul.mx-2.flex.h-full.w-fit.items-center:not(#x) a.item span,\nul.mx-2.flex.h-full.w-fit.items-center:not(#x) a.item svg {\n  color: #2b2f33 !important;\n  fill: currentColor !important;\n  text-shadow: 0 1px 1px rgba(255,255,255,0.5) !important;\n}\nul.mx-2.flex.h-full.w-fit.items-center:not(#x) a.item:hover,\nul.mx-2.flex.h-full.w-fit.items-center:not(#x) a.item:hover span {\n  color: #11151a !important;\n  background-color: rgba(255,255,255,0.55) !important;\n}\n";
+
+  var ATTRS = ["extracss", "disabled"];
 
   var configurationSchema = {
     properties: {
-      cssurl:   { type: "string", title: "Stylesheet URL", default: CSS_URL },
       extracss: { type: "string", title: "Extra CSS (appended, so it wins ties)", default: "" },
       disabled: { type: "string", title: "Disable (type yes to switch all styles off)", default: "" }
     }
   };
 
   var uiSchema = {
-    extracss: { "ui:widget": "textarea", "ui:help": "For quick tweaks without a commit." },
-    cssurl:   { "ui:help": "Leave as-is unless the stylesheet moves." }
+    extracss: {
+      "ui:widget": "textarea",
+      "ui:help": "Applied after the built-in rules. Edit here for quick changes without a commit."
+    }
   };
 
   var factory = function (BaseBlockClass) {
@@ -38,7 +40,6 @@
 
         var off = (this.getAttribute("disabled") || "").trim().toLowerCase();
         var extra = this.getAttribute("extracss") || "";
-        var url = (this.getAttribute("cssurl") || CSS_URL).trim();
 
         var tag = document.getElementById(STYLE_ID);
         if (!tag) {
@@ -48,14 +49,7 @@
         // Last in head wins ties at equal specificity, so re-append on every
         // render to stay ahead of stylesheets the app loads later.
         document.head.appendChild(tag);
-
-        if (off === "yes" || off === "true") { tag.textContent = ""; return; }
-
-        // Timestamp defeats both the browser and any CDN in front of Pages.
-        fetch(url + (url.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store" })
-          .then(function (r) { return r.ok ? r.text() : ""; })
-          .then(function (css) { tag.textContent = css + "\n" + extra; })
-          .catch(function () { tag.textContent = extra; });
+        tag.textContent = (off === "yes" || off === "true") ? "" : BASE + "\n" + extra;
       }
 
       static get observedAttributes() { return ATTRS; }
@@ -74,6 +68,6 @@
       iconUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%236b7178'/%3E%3Cg fill='%23fff'%3E%3Cpath d='M12 11h16v3H12zM12 18h16v3H12zM12 25h10v3H12z'/%3E%3C/g%3E%3C/svg%3E"
     },
     author: "Staffbase",
-    version: "2.0.0"
+    version: "4.0.0"
   });
 })();

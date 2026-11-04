@@ -111,6 +111,23 @@
     "." + P + "-side{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}"
   ].join("");
 
+  // Page-level rules, shipped from here because this block is the one thing
+  // that reliably executes on the live page. A <style> element styles the whole
+  // document wherever it sits, so these reach the nav from inside the widget.
+  var PAGE_CSS = [
+    "*:not(#q):not(#q){",
+    "--sb-background-menubar-intranet:#ffffff !important;",
+    "--sb-text-menubar-intranet:#2b2f33 !important;",
+    "--sb-background-menubar-intranet-hover:#eef1f6 !important;",
+    "--sb-text-menubar-intranet-hover:#11151a !important;",
+    "--sb-background-menubar-intranet-accent:#e8ecf8 !important;",
+    "--sb-text-menubar-intranet-pressed:#11151a !important;}",
+    "a.item:not(#q):not(#q):not(#q),",
+    "a.item:not(#q):not(#q):not(#q) span,",
+    "a.item:not(#q):not(#q):not(#q) svg{",
+    "color:#2b2f33 !important;fill:#2b2f33 !important;}"
+  ].join("");
+
   var ATTRS = ["widgettitle", "events", "accent"];
 
   var configurationSchema = {
@@ -180,7 +197,7 @@
             esc(e.title) + "</b>" + (e.time ? "<span>" + esc(e.time) + "</span>" : "") + "</div></div>";
         }).join("") : '<p class="' + P + '-empty">Nothing scheduled.</p>';
 
-        this._container.innerHTML = "<style>" + CSS + "</style>" +
+        this._container.innerHTML = "<style>" + PAGE_CSS + CSS + "</style>" +
           '<div class="' + P + '-root" style="--accent:' + esc(this._accent) + '">' +
             "<div>" +
               '<div class="' + P + '-hd"><div class="' + P + '-mo">' + MONTHS[m] + " " + y + "</div>" +

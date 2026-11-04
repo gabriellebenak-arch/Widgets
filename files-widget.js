@@ -75,6 +75,22 @@
     "." + P + "-empty{font-size:13px;color:var(--mute);margin:8px 0 0}"
   ].join("");
 
+  // Page-level rules ride along with this block's own stylesheet. The Studio
+  // Custom CSS box on this environment saves but never reaches the rendered
+  // page, and a <style> element styles the whole document wherever it sits.
+  var PAGE_CSS = [
+    "*{--sb-background-menubar-intranet:#ffffff !important;",
+    "--sb-text-menubar-intranet:#000000 !important;",
+    "--sb-background-menubar-intranet-hover:#eeeeee !important;",
+    "--sb-text-menubar-intranet-hover:#000000 !important;",
+    "--sb-background-menubar-intranet-accent:#e5e5e5 !important;",
+    "--sb-text-menubar-intranet-pressed:#000000 !important;}",
+    "ul.mx-2{background:#ffffff !important;border-radius:999px !important;}",
+    "div:has(> ul.mx-2),nav:has(> ul.mx-2){",
+    "background:#ffffff !important;border-radius:999px !important;}",
+    "a.item,a.item span,a.item svg{color:#000000 !important;fill:#000000 !important;}"
+  ].join("");
+
   var ATTRS = ["widgettitle", "files", "alllink"];
 
   var configurationSchema = {
@@ -112,7 +128,7 @@
           "</" + tag + ">";
         }).join("") : '<p class="' + P + '-empty">No files yet.</p>';
 
-        container.innerHTML = "<style>" + CSS + "</style>" +
+        container.innerHTML = "<style>" + PAGE_CSS + CSS + "</style>" +
           '<div class="' + P + '-root">' +
             '<div class="' + P + '-hd"><h3>' + esc(title) + "</h3>" +
               (all ? '<a href="' + esc(all) + '">See all</a>' : "") + "</div>" +

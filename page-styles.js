@@ -76,16 +76,72 @@
         document.head.appendChild(tag);
         tag.textContent = (off === "yes" || off === "true") ? "" : BASE + "\n" + extra;
 
-        // Invisible on the live page; a marker in Studio so the block can be
-        // found and selected in the editor.
+        // Invisible on the live page. In Studio it doubles as a probe: this
+        // environment's header is not header[data-c13y-region="header"], and
+        // the nav rules cannot be written without knowing what it actually is.
         var inStudio = location.pathname.indexOf("/studio/") !== -1;
         container.innerHTML = inStudio
           ? '<div style="font:500 12px/1.4 system-ui,sans-serif;color:#6b7178;' +
             'border:1px dashed #c3c8ce;border-radius:10px;padding:10px 12px;' +
-            'background:rgba(255,255,255,.5)">' +
-            "Page Styles — applies the dashboard stylesheet. Not visible to employees." +
-            "</div>"
+            'background:rgba(255,255,255,.6)">' +
+            '<b>Page Styles</b> \u2014 not visible to employees. ' +
+            '<button type="button" data-probe style="font:inherit;cursor:pointer;' +
+            'border:1px solid #c3c8ce;border-radius:7px;padding:3px 9px;' +
+            'background:#fff;margin-left:6px">Copy nav report</button>' +
+            '<pre data-out style="margin:8px 0 0;max-height:220px;overflow:auto;' +
+            'white-space:pre-wrap;font:11px/1.35 ui-monospace,Menlo,monospace;' +
+            'color:#2b2f33"></pre></div>'
           : "";
+
+        if (!inStudio) return;
+        var out = container.querySelector("[data-out]");
+        var btn = container.querySelector("[data-probe]");
+
+        var report = (function () {
+          var lines = [], vw = innerWidth, seen = [];
+          function desc(el) {
+            var r = el.getBoundingClientRect();
+            var cs = getComputedStyle(el);
+            var at = [];
+            for (var i = 0; i < el.attributes.length; i++) {
+              var a = el.attributes[i];
+              if (a.name.indexOf("data-") === 0 || a.name === "role" || a.name === "id")
+                at.push(a.name + '="' + String(a.value).slice(0, 44) + '"');
+            }
+            return el.tagName.toLowerCase() +
+              (el.id ? "#" + el.id : "") +
+              (el.className && el.className.baseVal === undefined && typeof el.className === "string"
+                ? "." + el.className.trim().split(/\s+/).slice(0, 6).join(".") : "") +
+              "\n    attrs: " + (at.join(" ") || "(none)") +
+              "\n    box:   " + Math.round(r.width) + "x" + Math.round(r.height) +
+              " @ top " + Math.round(r.top) +
+              "\n    bg:    " + cs.backgroundColor + "  color: " + cs.color +
+              "\n    radius:" + cs.borderRadius + "  pos: " + cs.position;
+          }
+          var all = document.querySelectorAll(
+            'header,[role="banner"],nav,[data-c13y-region],[class*="header"],[class*="Header"],[class*="nav"],[class*="Nav"]');
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i], r = el.getBoundingClientRect();
+            if (r.width < vw * 0.3) continue;
+            if (r.top > 240) continue;
+            if (r.height < 20 || r.height > 260) continue;
+            if (seen.indexOf(el) !== -1) continue;
+            seen.push(el);
+            lines.push("[" + seen.length + "] " + desc(el));
+            if (seen.length >= 8) break;
+          }
+          return "URL: " + location.href + "\nviewport: " + vw + "x" + innerHeight +
+            "\ncandidates: " + seen.length + "\n\n" + (lines.join("\n\n") || "NONE FOUND");
+        })();
+
+        out.textContent = report;
+        btn.addEventListener("click", function () {
+          navigator.clipboard.writeText(report).then(function () {
+            btn.textContent = "Copied \u2713";
+          }, function () {
+            btn.textContent = "Select the text below instead";
+          });
+        });
       }
 
       static get observedAttributes() { return ATTRS; }

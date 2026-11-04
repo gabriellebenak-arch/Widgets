@@ -41,15 +41,36 @@
         var off = (this.getAttribute("disabled") || "").trim().toLowerCase();
         var extra = this.getAttribute("extracss") || "";
 
-        var tag = document.getElementById(STYLE_ID);
-        if (!tag) {
-          tag = document.createElement("style");
-          tag.id = STYLE_ID;
+        var css = (off === "yes" || off === "true") ? "" : BASE + "\n" + extra;
+
+        // Staffbase may render a custom block inside an iframe, in which case
+        // this document is the frame's and styling the page needs the top
+        // one. Same-origin frames allow that; a sandboxed one throws, so try
+        // both and keep whichever lands.
+        var docs = [document];
+        try {
+          if (window.top && window.top.document && window.top.document !== document) {
+            docs.push(window.top.document);
+          }
+        } catch (e) { /* cross-origin: the local document is all we get */ }
+        try {
+          if (window.parent && window.parent.document &&
+              docs.indexOf(window.parent.document) === -1) {
+            docs.push(window.parent.document);
+          }
+        } catch (e) { /* same */ }
+
+        for (var i = 0; i < docs.length; i++) {
+          try {
+            var d = docs[i];
+            var tag = d.getElementById(STYLE_ID);
+            if (!tag) { tag = d.createElement("style"); tag.id = STYLE_ID; }
+            // Last in head wins ties at equal specificity, so re-append every
+            // render to stay ahead of stylesheets the app loads later.
+            d.head.appendChild(tag);
+            tag.textContent = css;
+          } catch (e) { /* unreachable document, try the next */ }
         }
-        // Last in head wins ties at equal specificity, so re-append on every
-        // render to stay ahead of stylesheets the app loads later.
-        document.head.appendChild(tag);
-        tag.textContent = (off === "yes" || off === "true") ? "" : BASE + "\n" + extra;
       }
 
       static get observedAttributes() { return ATTRS; }
@@ -68,6 +89,6 @@
       iconUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%236b7178'/%3E%3Cg fill='%23fff'%3E%3Cpath d='M12 11h16v3H12zM12 18h16v3H12zM12 25h10v3H12z'/%3E%3C/g%3E%3C/svg%3E"
     },
     author: "Staffbase",
-    version: "4.0.0"
+    version: "5.0.0"
   });
 })();

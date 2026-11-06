@@ -326,6 +326,18 @@ html, body { background: transparent !important; padding: 0 !important; color: #
 }
 .cw-btn-submit { background: #2f5d4a !important; }
 .t-footer .by-name, .cw-text-btn { color: #2f5d4a !important; }
+
+html, body { height: 100% !important; overflow: hidden !important; }
+.plugin-window {
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.cw-header { flex: 0 0 auto !important; }
+.cw-list { flex: 1 1 auto !important; overflow-y: auto !important; }
+.cw-list::-webkit-scrollbar { width: 6px; }
+.cw-list::-webkit-scrollbar-thumb { background: rgba(120,128,138,0.28); border-radius: 3px; }
 </style>
 </head>
 <body>

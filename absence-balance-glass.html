@@ -277,6 +277,20 @@ html, body { background: transparent !important; }
 .absence-row__date { font-size: 14px !important; font-weight: 600 !important; }
 .absence-row__meta { font-size: 12px !important; }
 .cw-badge { font-size: 12px !important; }
+
+html, body { height: 100% !important; overflow: hidden !important; }
+.widget {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.absence-list {
+  flex: 1 1 auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+.absence-list::-webkit-scrollbar { width: 6px; }
+.absence-list::-webkit-scrollbar-thumb { background: rgba(120,128,138,0.28); border-radius: 3px; }
 </style>
 </head>
 

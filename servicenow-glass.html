@@ -326,18 +326,52 @@ html, body { background: transparent !important; padding: 0 !important; color: #
 }
 .cw-btn-submit { background: #2f5d4a !important; }
 .t-footer .by-name, .cw-text-btn { color: #2f5d4a !important; }
+</style>
 
-html, body { height: 100% !important; overflow: hidden !important; }
-.plugin-window {
-  height: 100% !important;
-  max-height: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
+<script>(function(){try{
+  var p = new URLSearchParams(location.search).get('theme');
+  if (p === 'dark') document.documentElement.setAttribute('data-theme','dark');
+}catch(e){}})();</script>
+
+<style>
+html[data-theme="dark"] {
+  color-scheme: dark !important;
+  --primary: #5eba8c !important;
+  --sb-brand: #5eba8c !important;
+  --success: #5eba8c !important;
+  --money: #5eba8c !important;
+  --text: #e8ecea !important;
+  --text-light: #9aa5ab !important;
+  --bg: transparent !important;
+  --bg-gray: rgba(255,255,255,0.06) !important;
+  --border: rgba(255,255,255,0.12) !important;
+  --icon-bg: rgba(94,186,140,0.16) !important;
+  --badge-bg: rgba(94,186,140,0.18) !important;
+  --badge-text: #a9e3c4 !important;
+  --shadow: 0 18px 44px rgba(0,0,0,0.40) !important;
 }
-.cw-header { flex: 0 0 auto !important; }
-.cw-list { flex: 1 1 auto !important; overflow-y: auto !important; }
-.cw-list::-webkit-scrollbar { width: 6px; }
-.cw-list::-webkit-scrollbar-thumb { background: rgba(120,128,138,0.28); border-radius: 3px; }
+html[data-theme="dark"], html[data-theme="dark"] body { background: transparent !important; color: #e8ecea !important; }
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3 { color: #e8ecea !important; }
+</style>
+
+<style>
+html[data-theme="dark"] .plugin-window {
+  background: rgba(255,255,255,0.085) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.10), 0 18px 44px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+html[data-theme="dark"] .ticket-item { border-bottom-color: rgba(255,255,255,0.12) !important; }
+html[data-theme="dark"] .ticket-item:hover { background: rgba(255,255,255,0.06) !important; }
+html[data-theme="dark"] .t-badge,
+html[data-theme="dark"] .cw-input,
+html[data-theme="dark"] .view-select,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {
+  background: rgba(255,255,255,0.07) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12) !important;
+  color: #e8ecea !important;
+}
+html[data-theme="dark"] .cw-context-menu,
+html[data-theme="dark"] .cw-overlay { background: #1b2126 !important; }
 </style>
 </head>
 <body>
